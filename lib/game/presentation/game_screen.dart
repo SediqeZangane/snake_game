@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:snake_game/game/presentation/arrows.dart';
+import 'package:snake_game/game/presentation/board.dart';
 
 class GameScreen extends StatefulWidget {
   static const String routeNamed = 'gameScreen';
@@ -13,20 +14,12 @@ class GameScreen extends StatefulWidget {
 class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return const SafeArea(
         child: Scaffold(
       body: Column(
         children: [
-          Expanded(
-            flex:2,
-            child: Container(
-                color: Colors.deepPurpleAccent
-            ),
-          ),
-           const Expanded(
-            flex: 1,
-            child: Arrows(),
-          ),
+          Expanded(flex: 3, child: Board()),
+          Expanded(flex: 2, child: Arrows()),
         ],
       ),
     ));

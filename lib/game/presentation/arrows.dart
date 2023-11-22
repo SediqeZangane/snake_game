@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:snake_game/game/application/game_bloc.dart';
+import 'package:snake_game/game/application/game_event.dart';
 
 class Arrows extends StatelessWidget {
   const Arrows({super.key});
@@ -14,7 +17,9 @@ class Arrows extends StatelessWidget {
               const Expanded(child: SizedBox()),
               buttonWidget(
                 Icons.arrow_circle_up_outlined,
-                () {},
+                () {
+                  context.read<GameBloc>().add(GameUpEvent());
+                },
               ),
               const Expanded(child: SizedBox()),
             ],
