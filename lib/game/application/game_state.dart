@@ -1,30 +1,22 @@
-import 'dart:ui';
+import 'package:snake_game/game/application/game_bloc.dart';
+import 'package:snake_game/shared/cell_type.dart';
 
 class GameSate {
-  final List<Color> gridColors;
-  final int snakeTail;
-  final int snakeHead;
+  final List<List<CellType>> board;
 
   const GameSate({
-    required this.gridColors,
-    required this.snakeTail,
-    required this.snakeHead,
+    required this.board,
   });
 
   GameSate.init()
-      : gridColors = List.generate(100, (index) => const Color(0xffb74093)),
-        snakeTail = 0,
-        snakeHead = 0;
+      : board = List.generate(
+            boardSize, (_) => List.filled(boardSize, CellType.empty));
 
   GameSate copyWith({
-    List<Color>? gridColors,
-    int? snakeTail,
-    int? snakeHead,
+    List<List<CellType>>? board,
   }) {
     return GameSate(
-      gridColors: gridColors ?? this.gridColors,
-      snakeTail: snakeTail ?? this.snakeTail,
-      snakeHead: snakeHead ?? this.snakeHead,
+      board: board ?? this.board,
     );
   }
 }
