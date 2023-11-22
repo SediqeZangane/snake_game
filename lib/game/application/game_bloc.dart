@@ -8,26 +8,41 @@ import 'package:snake_game/shared/cell_type.dart';
 const boardSize = 16;
 
 class GameBloc extends Bloc<GameEvent, GameSate> {
+  final snakeHead = 2;
+
   GameBloc() : super(GameSate.init()) {
     on<GameEvent>((event, emit) {
       final board = state.board;
       if (event is GameInitEvent) {
-        board[randomInt()][randomInt()] = CellType.seed;
+        board[randomInt()][randomInt()] = -1;
         final rowHead = randomInt();
         final columnHead = randomInt();
-        board[rowHead][columnHead] = CellType.head;
-        board[rowHead][columnHead - 1] = CellType.tail;
+        board[rowHead][columnHead] = snakeHead;
 
-        emit(state.copyWith(board: board));
+        board[rowHead][columnHead - 1] = 1;
+
+        emit(state.copyWith(
+            board: board,
+            headPosition: Position(row: rowHead, column: columnHead)));
       }
 
       if (event is GameRightEvent) {
-        final indexes = board.map((e) => e.indexOf(CellType.head)).toList();
-        final rowIndex = indexes.indexWhere((element) => element != -1);
-        final columnIndex = indexes[rowIndex];
+        board[state.headPosition.row][state.headPosition.column + 1] =
+            snakeHead + 1;
+        emit(state.copyWith(
+            headPosition: Position(
+                row: state.headPosition.row,
+                column: state.headPosition.column + 1)));
 
-        board[rowIndex][columnIndex] = CellType.empty;
-        board[rowIndex][columnIndex + 1] = CellType.head;
+        for (int i = 0; i < board.length; i++) {
+          final row = board[i];
+          for (int j = 0; j < row.length; j++) {
+            if (board[i][j] > 0) {
+              board[i][j] = board[i][j] - 1;
+            }
+          }
+        }
+
         emit(state.copyWith(board: board));
       }
     });

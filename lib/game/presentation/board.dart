@@ -26,9 +26,9 @@ class _BoardState extends State<Board> {
     });
   }
 
-  Widget buildCell(CellType cell) {
+  Widget buildCell(int cell) {
     Color color;
-    switch (cell) {
+    switch (toCellType(cell)) {
       case CellType.head:
         color = Colors.cyanAccent;
       case CellType.body:
@@ -44,5 +44,15 @@ class _BoardState extends State<Board> {
         color = Colors.grey;
     }
     return SizedBox.square(dimension: 20, child: ColoredBox(color: color));
+  }
+
+  CellType toCellType(int num) {
+    if (num > 0) {
+      return CellType.body;
+    } else if (num == -1) {
+      return CellType.seed;
+    }
+
+    return CellType.empty;
   }
 }
