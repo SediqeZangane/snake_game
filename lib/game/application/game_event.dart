@@ -1,12 +1,5 @@
 abstract class GameEvent {}
 
-class GameInitEvent implements GameEvent {
-  // final int index;
+class GameInitEvent implements GameEvent {}
 
-  // const GameInitEvent({
-  //   required this.index,
-  // });
-}
-
-class GameUpEvent implements GameEvent {}
-
+class GameRightEvent implements GameEvent {}

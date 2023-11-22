@@ -18,7 +18,6 @@ class Arrows extends StatelessWidget {
               buttonWidget(
                 Icons.arrow_circle_up_outlined,
                 () {
-                  context.read<GameBloc>().add(GameUpEvent());
                 },
               ),
               const Expanded(child: SizedBox()),
@@ -33,7 +32,9 @@ class Arrows extends StatelessWidget {
               const Expanded(child: SizedBox()),
               buttonWidget(
                 Icons.arrow_circle_right_outlined,
-                () {},
+                () {
+                  context.read<GameBloc>().add(GameRightEvent());
+                },
               )
             ],
           ),
