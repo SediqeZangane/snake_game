@@ -31,14 +31,26 @@ class GameBloc extends Bloc<GameEvent, GameSate> {
         if (event is GameRightEvent) {
           nextRow = state.headPosition.row;
           nextColumn = state.headPosition.column + 1;
+          if (nextColumn == boardSize) {
+            nextColumn = 0;
+          }
         } else if (event is GameLeftEvent) {
           nextRow = state.headPosition.row;
           nextColumn = state.headPosition.column - 1;
+          if (nextColumn == -1) {
+            nextColumn = boardSize - 1;
+          }
         } else if (event is GameUpEvent) {
           nextRow = state.headPosition.row - 1;
+          if (nextRow == -1) {
+            nextRow = boardSize - 1;
+          }
           nextColumn = state.headPosition.column;
         } else if (event is GameDownEvent) {
           nextRow = state.headPosition.row + 1;
+          if (nextRow == boardSize) {
+            nextRow = 0;
+          }
           nextColumn = state.headPosition.column;
         }
 
