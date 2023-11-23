@@ -34,15 +34,41 @@ class GameBloc extends Bloc<GameEvent, GameSate> {
                 row: state.headPosition.row,
                 column: state.headPosition.column + 1)));
 
-        for (int i = 0; i < board.length; i++) {
-          final row = board[i];
-          for (int j = 0; j < row.length; j++) {
-            if (board[i][j] > 0) {
-              board[i][j] = board[i][j] - 1;
-            }
-          }
-        }
+        moveBody(board);
 
+        emit(state.copyWith(board: board));
+      }
+
+      if (event is GameUpEvent) {
+        board[state.headPosition.row - 1][state.headPosition.column] =
+            snakeHead + 1;
+        emit(state.copyWith(
+            headPosition: Position(
+                row: state.headPosition.row - 1,
+                column: state.headPosition.column)));
+        moveBody(board);
+        emit(state.copyWith(board: board));
+      }
+
+      if (event is GameDownEvent) {
+        board[state.headPosition.row + 1][state.headPosition.column] =
+            snakeHead + 1;
+        emit(state.copyWith(
+            headPosition: Position(
+                row: state.headPosition.row + 1,
+                column: state.headPosition.column)));
+        moveBody(board);
+        emit(state.copyWith(board: board));
+      }
+
+      if (event is GameLeftEvent) {
+        board[state.headPosition.row][state.headPosition.column - 1] =
+            snakeHead + 1;
+        emit(state.copyWith(
+            headPosition: Position(
+                row: state.headPosition.row,
+                column: state.headPosition.column - 1)));
+        moveBody(board);
         emit(state.copyWith(board: board));
       }
     });
@@ -50,5 +76,16 @@ class GameBloc extends Bloc<GameEvent, GameSate> {
 
   int randomInt() {
     return Random().nextInt(boardSize - 1);
+  }
+
+  void moveBody(List<List<int>> board) {
+    for (int i = 0; i < board.length; i++) {
+      final row = board[i];
+      for (int j = 0; j < row.length; j++) {
+        if (board[i][j] > 0) {
+          board[i][j] = board[i][j] - 1;
+        }
+      }
+    }
   }
 }

@@ -47,7 +47,9 @@ class _BoardState extends State<Board> {
   }
 
   CellType toCellType(int num) {
-    if (num > 0) {
+    if (num == 1) {
+      return CellType.tail;
+    } else if (num > 0) {
       return CellType.body;
     } else if (num == -1) {
       return CellType.seed;
