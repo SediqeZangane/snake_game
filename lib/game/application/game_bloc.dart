@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,8 +7,11 @@ import 'package:snake_game/game/application/game_state.dart';
 
 const boardSize = 16;
 
+enum Direction { Right, Left, Up, Down }
+
 class GameBloc extends Bloc<GameEvent, GameSate> {
   int snakeHead = 2;
+  Direction direction = Direction.Right;
 
   GameBloc() : super(GameSate.init()) {
     on<GameEvent>((event, emit) {
@@ -23,6 +27,22 @@ class GameBloc extends Bloc<GameEvent, GameSate> {
         emit(state.copyWith(
             board: board,
             headPosition: Position(row: rowHead, column: columnHead)));
+        Timer.periodic(const Duration(milliseconds: 100), (timer) {
+          switch (direction) {
+            case Direction.Right:
+              add(GameRightEvent());
+              break;
+            case Direction.Left:
+              add(GameLeftEvent());
+              break;
+            case Direction.Up:
+              add(GameUpEvent());
+              break;
+            case Direction.Down:
+              add(GameDownEvent());
+              break;
+          }
+        });
       }
 
       if (event is MoveEvent) {
@@ -34,24 +54,28 @@ class GameBloc extends Bloc<GameEvent, GameSate> {
           if (nextColumn == boardSize) {
             nextColumn = 0;
           }
+          direction = Direction.Right;
         } else if (event is GameLeftEvent) {
           nextRow = state.headPosition.row;
           nextColumn = state.headPosition.column - 1;
           if (nextColumn == -1) {
             nextColumn = boardSize - 1;
           }
+          direction = Direction.Left;
         } else if (event is GameUpEvent) {
           nextRow = state.headPosition.row - 1;
           if (nextRow == -1) {
             nextRow = boardSize - 1;
           }
           nextColumn = state.headPosition.column;
+          direction = Direction.Up;
         } else if (event is GameDownEvent) {
           nextRow = state.headPosition.row + 1;
           if (nextRow == boardSize) {
             nextRow = 0;
           }
           nextColumn = state.headPosition.column;
+          direction = Direction.Down;
         }
 
         final isNextSeed = board[nextRow][nextColumn] == -1;
