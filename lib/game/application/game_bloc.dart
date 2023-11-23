@@ -3,12 +3,11 @@ import 'dart:math';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snake_game/game/application/game_event.dart';
 import 'package:snake_game/game/application/game_state.dart';
-import 'package:snake_game/shared/cell_type.dart';
 
 const boardSize = 16;
 
 class GameBloc extends Bloc<GameEvent, GameSate> {
-  final snakeHead = 2;
+  int snakeHead = 2;
 
   GameBloc() : super(GameSate.init()) {
     on<GameEvent>((event, emit) {
@@ -26,49 +25,36 @@ class GameBloc extends Bloc<GameEvent, GameSate> {
             headPosition: Position(row: rowHead, column: columnHead)));
       }
 
-      if (event is GameRightEvent) {
-        board[state.headPosition.row][state.headPosition.column + 1] =
-            snakeHead + 1;
+      if (event is MoveEvent) {
+        int nextRow = -1;
+        int nextColumn = -1;
+        if (event is GameRightEvent) {
+          nextRow = state.headPosition.row;
+          nextColumn = state.headPosition.column + 1;
+        } else if (event is GameLeftEvent) {
+          nextRow = state.headPosition.row;
+          nextColumn = state.headPosition.column - 1;
+        } else if (event is GameUpEvent) {
+          nextRow = state.headPosition.row - 1;
+          nextColumn = state.headPosition.column;
+        } else if (event is GameDownEvent) {
+          nextRow = state.headPosition.row + 1;
+          nextColumn = state.headPosition.column;
+        }
+
+        final isNextSeed = board[nextRow][nextColumn] == -1;
+
+        board[nextRow][nextColumn] = snakeHead + 1;
         emit(state.copyWith(
-            headPosition: Position(
-                row: state.headPosition.row,
-                column: state.headPosition.column + 1)));
+            headPosition: Position(row: nextRow, column: nextColumn)));
 
-        moveBody(board);
+        if (isNextSeed) {
+          snakeHead = snakeHead + 1;
+          board[randomInt()][randomInt()] = -1;
+        } else {
+          moveBody(board);
+        }
 
-        emit(state.copyWith(board: board));
-      }
-
-      if (event is GameUpEvent) {
-        board[state.headPosition.row - 1][state.headPosition.column] =
-            snakeHead + 1;
-        emit(state.copyWith(
-            headPosition: Position(
-                row: state.headPosition.row - 1,
-                column: state.headPosition.column)));
-        moveBody(board);
-        emit(state.copyWith(board: board));
-      }
-
-      if (event is GameDownEvent) {
-        board[state.headPosition.row + 1][state.headPosition.column] =
-            snakeHead + 1;
-        emit(state.copyWith(
-            headPosition: Position(
-                row: state.headPosition.row + 1,
-                column: state.headPosition.column)));
-        moveBody(board);
-        emit(state.copyWith(board: board));
-      }
-
-      if (event is GameLeftEvent) {
-        board[state.headPosition.row][state.headPosition.column - 1] =
-            snakeHead + 1;
-        emit(state.copyWith(
-            headPosition: Position(
-                row: state.headPosition.row,
-                column: state.headPosition.column - 1)));
-        moveBody(board);
         emit(state.copyWith(board: board));
       }
     });
