@@ -5,6 +5,7 @@ import 'package:snake_game/game/application/game_event.dart';
 import 'package:snake_game/game/application/game_state.dart';
 import 'package:snake_game/game/presentation/arrows.dart';
 import 'package:snake_game/game/presentation/board.dart';
+import 'package:snake_game/home/presentation/home_screen.dart';
 
 class GameScreen extends StatefulWidget {
   static const String routeNamed = 'gameScreen';
@@ -23,7 +24,7 @@ class _GameScreenState extends State<GameScreen> {
       body: BlocListener<GameBloc, GameState>(
         listener: (BuildContext context, state) {
           if (state.gameOver) {
-            // gameOverDialog(context);
+            gameOverDialog(context);
           }
         },
         child: const Column(
@@ -39,20 +40,22 @@ class _GameScreenState extends State<GameScreen> {
   void gameOverDialog(BuildContext context) {
     showDialog<void>(
       context: context,
-      builder: (context) {
+      builder: (_) {
         return AlertDialog(
           title: const Text('Game Over'),
           actions: <Widget>[
             TextButton(
               child: const Text('Restart'),
               onPressed: () {
+                Navigator.of(context).pop();
                 context.read<GameBloc>().add(GameInitEvent());
               },
             ),
             TextButton(
               child: const Text('Back'),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).popUntil(
+                    (route) => route.settings.name == HomeScreen.routeNamed);
               },
             ),
           ],

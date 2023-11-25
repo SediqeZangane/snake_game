@@ -1,14 +1,20 @@
 import 'package:snake_game/game/application/game_bloc.dart';
 
+enum Direction { right, left, up, down }
+
 class GameState {
   final List<List<int>> board;
   final Position headPosition;
   final bool gameOver;
+  final int snakeHead;
+  final Direction direction;
 
   const GameState({
     required this.board,
     required this.headPosition,
     required this.gameOver,
+    required this.snakeHead,
+    required this.direction,
   });
 
   GameState.init()
@@ -17,17 +23,23 @@ class GameState {
           row: -1,
           column: -1,
         ),
-        gameOver = false;
+        gameOver = false,
+        snakeHead = 2,
+        direction = Direction.right;
 
   GameState copyWith({
     List<List<int>>? board,
     Position? headPosition,
     bool? gameOver,
+    int? snakeHead,
+    Direction? direction,
   }) {
     return GameState(
       board: board ?? this.board,
       headPosition: headPosition ?? this.headPosition,
       gameOver: gameOver ?? this.gameOver,
+      snakeHead: snakeHead ?? this.snakeHead,
+      direction: direction ?? this.direction,
     );
   }
 }

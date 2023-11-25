@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:snake_game/game/presentation/game_screen.dart';
 
 class HomeScreen extends StatelessWidget {
+  static const String routeNamed = 'homeScreen';
+
   const HomeScreen({super.key});
 
   @override

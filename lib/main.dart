@@ -20,14 +20,14 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const HomeScreen(),
+      initialRoute: HomeScreen.routeNamed,
       routes: {
         GameScreen.routeNamed: (context) => BlocProvider<GameBloc>(
             create: (context) {
-
               return GameBloc()..add(GameInitEvent());
             },
-            child: const GameScreen())
+            child: const GameScreen()),
+        HomeScreen.routeNamed: (context) => const HomeScreen()
       },
     );
   }
