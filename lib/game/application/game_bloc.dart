@@ -16,7 +16,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         seedPosition(board);
 
         final rowHead = randomInt();
-        final columnHead = randomInt();
+        final columnHead = max(randomInt(), 1);
         board[rowHead][columnHead] = state.snakeHead;
 
         board[rowHead][columnHead - 1] = 1;

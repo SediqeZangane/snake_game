@@ -19,16 +19,18 @@ class _BoardState extends State<Board> {
           children: state.board
               .map(
                 (row) => Row(
-                  children: row.map((cell) => buildCell(cell)).toList(),
+                  children: row
+                      .map((cell) => buildCell(cell, state.snakeHead))
+                      .toList(),
                 ),
               )
               .toList());
     });
   }
 
-  Widget buildCell(int cell) {
+  Widget buildCell(int cell, int snakeHead) {
     Color color;
-    switch (toCellType(cell)) {
+    switch (toCellType(cell, snakeHead)) {
       case CellType.head:
         color = Colors.cyanAccent;
       case CellType.body:
@@ -46,9 +48,11 @@ class _BoardState extends State<Board> {
     return SizedBox.square(dimension: 20, child: ColoredBox(color: color));
   }
 
-  CellType toCellType(int num) {
+  CellType toCellType(int num, int snakeHead) {
     if (num == 1) {
       return CellType.tail;
+    } else if (num == snakeHead) {
+      return CellType.head;
     } else if (num > 0) {
       return CellType.body;
     } else if (num == -1) {
