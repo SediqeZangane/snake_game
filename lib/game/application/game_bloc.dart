@@ -13,13 +13,14 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       if (event is GameInitEvent) {
         emit(GameState.init());
         final board = state.board;
-        seedPosition(board);
 
         final rowHead = randomInt();
         final columnHead = max(randomInt(), 1);
         board[rowHead][columnHead] = state.snakeHead;
 
         board[rowHead][columnHead - 1] = 1;
+
+        seedPosition(board);
 
         emit(
           state.copyWith(
