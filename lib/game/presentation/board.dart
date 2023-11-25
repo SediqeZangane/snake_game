@@ -19,6 +19,7 @@ class _BoardState extends State<Board> {
           children: state.board
               .map(
                 (row) => Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: row
                       .map((cell) => buildCell(cell, state.snakeHead))
                       .toList(),
@@ -45,7 +46,14 @@ class _BoardState extends State<Board> {
       case CellType.empty:
         color = Colors.grey;
     }
-    return SizedBox.square(dimension: 20, child: ColoredBox(color: color));
+    return Builder(
+      builder: (context) {
+        return SizedBox.square(
+          dimension: MediaQuery.of(context).size.height/40,
+          child: ColoredBox(color: color),
+        );
+      }
+    );
   }
 
   CellType toCellType(int num, int snakeHead) {

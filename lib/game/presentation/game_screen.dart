@@ -29,8 +29,9 @@ class _GameScreenState extends State<GameScreen> {
         },
         child: const Column(
           children: [
-            Expanded(flex: 3, child: Board()),
-            Expanded(flex: 2, child: Arrows()),
+            Expanded(flex: 1, child: SizedBox.shrink()),
+            Expanded(flex: 6, child: Center(child: Board())),
+            Expanded(flex: 5, child: Arrows()),
           ],
         ),
       ),
