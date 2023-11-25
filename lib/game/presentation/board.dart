@@ -14,7 +14,7 @@ class Board extends StatefulWidget {
 class _BoardState extends State<Board> {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<GameBloc, GameSate>(builder: (context, state) {
+    return BlocBuilder<GameBloc, GameState>(builder: (context, state) {
       return Column(
           children: state.board
               .map(

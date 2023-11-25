@@ -5,15 +5,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snake_game/game/application/game_event.dart';
 import 'package:snake_game/game/application/game_state.dart';
 
-const boardSize = 18;
+const boardSize = 10;
 
-enum Direction { Right, Left, Up, Down }
+enum Direction { right, left, up, down }
 
-class GameBloc extends Bloc<GameEvent, GameSate> {
+class GameBloc extends Bloc<GameEvent, GameState> {
   int snakeHead = 2;
-  Direction direction = Direction.Right;
+  Direction direction = Direction.right;
 
-  GameBloc() : super(GameSate.init()) {
+  GameBloc() : super(GameState.init()) {
     on<GameEvent>((event, emit) {
       final board = state.board;
       if (event is GameInitEvent) {
@@ -30,16 +30,16 @@ class GameBloc extends Bloc<GameEvent, GameSate> {
             headPosition: Position(row: rowHead, column: columnHead)));
         Timer.periodic(const Duration(milliseconds: 200), (timer) {
           switch (direction) {
-            case Direction.Right:
+            case Direction.right:
               add(GameRightEvent());
               break;
-            case Direction.Left:
+            case Direction.left:
               add(GameLeftEvent());
               break;
-            case Direction.Up:
+            case Direction.up:
               add(GameUpEvent());
               break;
-            case Direction.Down:
+            case Direction.down:
               add(GameDownEvent());
               break;
           }
@@ -48,50 +48,69 @@ class GameBloc extends Bloc<GameEvent, GameSate> {
       if (event is MoveEvent) {
         int nextRow = -1;
         int nextColumn = -1;
+
         if (event is GameRightEvent) {
+          if (direction == Direction.left) {
+            return;
+          }
           nextRow = state.headPosition.row;
           nextColumn = state.headPosition.column + 1;
           if (nextColumn == boardSize) {
             nextColumn = 0;
           }
-          direction = Direction.Right;
+          direction = Direction.right;
         } else if (event is GameLeftEvent) {
+          if (direction == Direction.right) {
+            return;
+          }
           nextRow = state.headPosition.row;
           nextColumn = state.headPosition.column - 1;
           if (nextColumn == -1) {
             nextColumn = boardSize - 1;
           }
-          direction = Direction.Left;
+          direction = Direction.left;
         } else if (event is GameUpEvent) {
+          if (direction == Direction.down) {
+            return;
+          }
           nextRow = state.headPosition.row - 1;
           if (nextRow == -1) {
             nextRow = boardSize - 1;
           }
           nextColumn = state.headPosition.column;
-          direction = Direction.Up;
+          direction = Direction.up;
         } else if (event is GameDownEvent) {
+          if (direction == Direction.up) {
+            return;
+          }
           nextRow = state.headPosition.row + 1;
           if (nextRow == boardSize) {
             nextRow = 0;
           }
           nextColumn = state.headPosition.column;
-          direction = Direction.Down;
+          direction = Direction.down;
         }
 
-        final isNextSeed = board[nextRow][nextColumn] == -1;
+        final nextCell = board[nextRow][nextColumn];
 
-        board[nextRow][nextColumn] = snakeHead + 1;
-        emit(state.copyWith(
-            headPosition: Position(row: nextRow, column: nextColumn)));
-
-        if (isNextSeed) {
-          snakeHead = snakeHead + 1;
-          seedPosition(board);
+        if (nextCell > 0) {
+          emit(state.copyWith(gameOver: true));
         } else {
-          moveBody(board);
-        }
+          final isNextSeed = board[nextRow][nextColumn] == -1;
 
-        emit(state.copyWith(board: board));
+          board[nextRow][nextColumn] = snakeHead + 1;
+          emit(state.copyWith(
+              headPosition: Position(row: nextRow, column: nextColumn)));
+
+          if (isNextSeed) {
+            snakeHead = snakeHead + 1;
+            seedPosition(board);
+          } else {
+            moveBody(board);
+          }
+
+          emit(state.copyWith(board: board));
+        }
       }
     });
   }
