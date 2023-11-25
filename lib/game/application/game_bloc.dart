@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snake_game/game/application/game_event.dart';
 import 'package:snake_game/game/application/game_state.dart';
 
-const boardSize = 16;
+const boardSize = 18;
 
 enum Direction { Right, Left, Up, Down }
 
@@ -17,7 +17,8 @@ class GameBloc extends Bloc<GameEvent, GameSate> {
     on<GameEvent>((event, emit) {
       final board = state.board;
       if (event is GameInitEvent) {
-        board[randomInt()][randomInt()] = -1;
+        seedPosition(board);
+
         final rowHead = randomInt();
         final columnHead = randomInt();
         board[rowHead][columnHead] = snakeHead;
@@ -27,7 +28,7 @@ class GameBloc extends Bloc<GameEvent, GameSate> {
         emit(state.copyWith(
             board: board,
             headPosition: Position(row: rowHead, column: columnHead)));
-        Timer.periodic(const Duration(milliseconds: 100), (timer) {
+        Timer.periodic(const Duration(milliseconds: 200), (timer) {
           switch (direction) {
             case Direction.Right:
               add(GameRightEvent());
@@ -44,7 +45,6 @@ class GameBloc extends Bloc<GameEvent, GameSate> {
           }
         });
       }
-
       if (event is MoveEvent) {
         int nextRow = -1;
         int nextColumn = -1;
@@ -86,7 +86,7 @@ class GameBloc extends Bloc<GameEvent, GameSate> {
 
         if (isNextSeed) {
           snakeHead = snakeHead + 1;
-          board[randomInt()][randomInt()] = -1;
+          seedPosition(board);
         } else {
           moveBody(board);
         }
@@ -94,6 +94,17 @@ class GameBloc extends Bloc<GameEvent, GameSate> {
         emit(state.copyWith(board: board));
       }
     });
+  }
+
+  void seedPosition(List<List<int>> board) {
+    final row = randomInt();
+    final column = randomInt();
+    var cellType = board[row][column];
+    if (cellType == 0) {
+      board[row][column] = -1;
+    } else {
+      seedPosition(board);
+    }
   }
 
   int randomInt() {
