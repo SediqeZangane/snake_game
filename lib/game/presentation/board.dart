@@ -15,17 +15,20 @@ class _BoardState extends State<Board> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<GameBloc, GameState>(builder: (context, state) {
-      return Column(
-          children: state.board
-              .map(
-                (row) => Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: row
-                      .map((cell) => buildCell(cell, state.snakeHead))
-                      .toList(),
-                ),
-              )
-              .toList());
+      return ColoredBox(color: Colors.deepPurpleAccent.shade200,
+        child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: state.board
+                .map(
+                  (row) => Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: row
+                        .map((cell) => buildCell(cell, state.snakeHead))
+                        .toList(),
+                  ),
+                )
+                .toList()),
+      );
     });
   }
 
@@ -44,7 +47,7 @@ class _BoardState extends State<Board> {
         color = Colors.red;
 
       case CellType.empty:
-        color = Colors.grey;
+        color = Colors.transparent;
     }
     return Builder(
       builder: (context) {

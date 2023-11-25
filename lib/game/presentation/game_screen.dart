@@ -21,29 +21,43 @@ class _GameScreenState extends State<GameScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      body: BlocListener<GameBloc, GameState>(
-        listener: (BuildContext context, state) {
-          if (state.gameOver) {
-            gameOverDialog(context);
-          }
-        },
-        child: const Column(
+      body: BlocConsumer<GameBloc, GameState>(
+          listener: (BuildContext context, state) {
+        if (state.gameOver) {
+          gameOverDialog(context, state);
+        }
+      }, builder: (BuildContext context, state) {
+        return Column(
           children: [
-            Expanded(flex: 1, child: SizedBox.shrink()),
-            Expanded(flex: 6, child: Center(child: Board())),
-            Expanded(flex: 5, child: Arrows()),
+            Expanded(
+              flex: 1,
+              child: Center(
+                  child: Text(
+                'Score : ${state.score}',
+                style: const TextStyle(fontSize: 32,fontWeight: FontWeight.bold),
+              )),
+            ),
+            const Expanded(flex: 6, child: Center(child: Board())),
+            const Expanded(flex: 5, child: Arrows()),
           ],
-        ),
-      ),
+        );
+      }),
     ));
   }
 
-  void gameOverDialog(BuildContext context) {
+  void gameOverDialog(BuildContext context, GameState state) {
     showDialog<void>(
       context: context,
       builder: (_) {
         return AlertDialog(
-          title: const Text('Game Over'),
+          title: const Text(
+            'Game Over',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          content: Text(
+            'Your score is ${state.score}',
+            style: const TextStyle(fontWeight: FontWeight.w600),
+          ),
           actions: <Widget>[
             TextButton(
               child: const Text('Restart'),

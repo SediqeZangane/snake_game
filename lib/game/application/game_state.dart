@@ -17,6 +17,10 @@ class GameState {
     required this.direction,
   });
 
+  int get score {
+    return snakeHead - 2;
+  }
+
   GameState.init()
       : board = List.generate(boardSize, (_) => List.filled(boardSize, 0)),
         headPosition = const Position(
