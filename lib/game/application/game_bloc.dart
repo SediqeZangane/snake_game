@@ -8,6 +8,8 @@ import 'package:snake_game/game/application/game_state.dart';
 const boardSize = 18;
 
 class GameBloc extends Bloc<GameEvent, GameState> {
+  Timer? timer;
+
   GameBloc() : super(GameState.init()) {
     on<GameEvent>((event, emit) {
       if (event is GameInitEvent) {
@@ -28,8 +30,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
             headPosition: Position(row: rowHead, column: columnHead),
           ),
         );
-
-        Timer.periodic(const Duration(milliseconds: 400), (timer) {
+        timer ??= Timer.periodic(const Duration(milliseconds: 400), (timer) {
           if (state.gameOver) {
             return;
           }
@@ -148,5 +149,11 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         }
       }
     }
+  }
+
+  @override
+  Future<void> close() {
+    timer?.cancel();
+    return super.close();
   }
 }
