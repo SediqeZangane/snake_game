@@ -32,10 +32,6 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           ),
         );
         timer = Timer.periodic(const Duration(milliseconds: 300), (timer) {
-          if (state.gameOver) {
-            return;
-          }
-
           switch (state.direction) {
             case Direction.right:
               add(GameRightEvent());
@@ -53,6 +49,9 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         });
       }
       if (event is MoveEvent) {
+        if (state.gameOver) {
+          return;
+        }
         final board = state.board;
         int nextRow = -1;
         int nextColumn = -1;
