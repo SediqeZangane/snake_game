@@ -12,7 +12,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   Timer? timer;
 
   GameBloc() : super(GameState.init()) {
-    on<GameEvent>((event, emit) async {
+    on<GameEvent>((event, emit) {
       if (event is GameInitEvent) {
         emit(GameState.init());
         final board = state.board;
@@ -31,7 +31,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
             headPosition: Position(row: rowHead, column: columnHead),
           ),
         );
-        timer ??= Timer.periodic(const Duration(milliseconds: 400), (timer) {
+        timer ??= Timer.periodic(const Duration(milliseconds: 300), (timer) {
           if (state.gameOver) {
             return;
           }
@@ -104,14 +104,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
         if (nextCell > 0) {
           emit(state.copyWith(gameOver: true));
-
-          final SharedPreferences prefs = await SharedPreferences.getInstance();
-
-          int highScore = prefs.getInt('highScore') ?? 0;
-          if (state.score > highScore) {
-            await prefs.setInt('highScore', state.score);
-          }
-
+          saveScore();
           return;
         } else {
           final isNextSeed = board[nextRow][nextColumn] == -1;
@@ -164,5 +157,14 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   Future<void> close() {
     timer?.cancel();
     return super.close();
+  }
+
+  void saveScore() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    int highScore = prefs.getInt('highScore') ?? 0;
+    if (state.score > highScore) {
+      await prefs.setInt('highScore', state.score);
+    }
   }
 }
