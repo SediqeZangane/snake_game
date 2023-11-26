@@ -9,6 +9,9 @@ void main() {
   runApp(const MyApp());
 }
 
+// global RouteObserver
+final RouteObserver<Route> routeObserver = RouteObserver<Route>();
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -21,6 +24,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       initialRoute: HomeScreen.routeNamed,
+      navigatorObservers: <NavigatorObserver>[routeObserver],
       routes: {
         GameScreen.routeNamed: (context) => BlocProvider<GameBloc>(
             create: (context) {
