@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:snake_game/game/application/game_event.dart';
 import 'package:snake_game/game/application/game_state.dart';
 
@@ -11,7 +12,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   Timer? timer;
 
   GameBloc() : super(GameState.init()) {
-    on<GameEvent>((event, emit) {
+    on<GameEvent>((event, emit) async {
       if (event is GameInitEvent) {
         emit(GameState.init());
         final board = state.board;
@@ -103,6 +104,14 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
         if (nextCell > 0) {
           emit(state.copyWith(gameOver: true));
+
+          final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+          int highScore = prefs.getInt('highScore') ?? 0;
+          if (state.score > highScore) {
+            await prefs.setInt('highScore', state.score);
+          }
+
           return;
         } else {
           final isNextSeed = board[nextRow][nextColumn] == -1;

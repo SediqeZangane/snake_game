@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:snake_game/game/presentation/game_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -37,10 +38,18 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(
                 height: 20,
               ),
-              const Text(
-                '36',
-                style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold,color: Colors.red),
-              ),
+              FutureBuilder<SharedPreferences>(
+                  future: SharedPreferences.getInstance(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<SharedPreferences> snapshot) {
+                    return Text(
+                      '${snapshot.data?.getInt('highScore') ?? 0}',
+                      style: const TextStyle(
+                          fontSize: 36,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red),
+                    );
+                  }),
               const SizedBox(
                 height: 40,
               ),
