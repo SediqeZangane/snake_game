@@ -15,7 +15,8 @@ class _BoardState extends State<Board> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<GameBloc, GameState>(builder: (context, state) {
-      return ColoredBox(color: Colors.deepPurpleAccent.shade200,
+      return ColoredBox(
+        color: Colors.deepPurpleAccent.shade100,
         child: Column(
             mainAxisSize: MainAxisSize.min,
             children: state.board
@@ -23,7 +24,7 @@ class _BoardState extends State<Board> {
                   (row) => Row(
                     mainAxisSize: MainAxisSize.min,
                     children: row
-                        .map((cell) => buildCell(cell, state.snakeHead))
+                        .map((cell) => buildImageCell(cell, state.snakeHead))
                         .toList(),
                   ),
                 )
@@ -58,6 +59,28 @@ class _BoardState extends State<Board> {
       }
     );
   }
+
+  Widget buildImageCell(int cell, int snakeHead) {
+    String? imagePath;
+    switch (toCellType(cell, snakeHead)) {
+      case CellType.head:
+        imagePath = 'assets/head_right.png';
+      case CellType.body:
+        imagePath = 'assets/body_vertical.png';
+      case CellType.tail:
+        imagePath = 'assets/tail_up.png';
+      case CellType.seed:
+        imagePath = 'assets/apple.png';
+      case CellType.empty:
+    }
+    return Builder(builder: (context) {
+      return SizedBox.square(
+        dimension: MediaQuery.of(context).size.height / 40,
+        child: imagePath != null ? Image.asset(imagePath) : const SizedBox(),
+      );
+    });
+  }
+
 
   CellType toCellType(int num, int snakeHead) {
     if (num == 1) {
