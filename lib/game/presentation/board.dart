@@ -24,7 +24,8 @@ class _BoardState extends State<Board> {
                   (row) => Row(
                     mainAxisSize: MainAxisSize.min,
                     children: row
-                        .map((cell) => buildImageCell(cell, state.snakeHead))
+                        .map((cell) =>
+                            buildImageCell(cell, state.snakeHead, state))
                         .toList(),
                   ),
                 )
@@ -50,21 +51,19 @@ class _BoardState extends State<Board> {
       case CellType.empty:
         color = Colors.transparent;
     }
-    return Builder(
-      builder: (context) {
-        return SizedBox.square(
-          dimension: MediaQuery.of(context).size.height/40,
-          child: ColoredBox(color: color),
-        );
-      }
-    );
+    return Builder(builder: (context) {
+      return SizedBox.square(
+        dimension: MediaQuery.of(context).size.height / 40,
+        child: ColoredBox(color: color),
+      );
+    });
   }
 
-  Widget buildImageCell(int cell, int snakeHead) {
+  Widget buildImageCell(int cell, int snakeHead, GameState state) {
     String? imagePath;
     switch (toCellType(cell, snakeHead)) {
       case CellType.head:
-        imagePath = 'assets/head_right.png';
+        imagePath = getHead(state);
       case CellType.body:
         imagePath = 'assets/body_vertical.png';
       case CellType.tail:
@@ -81,7 +80,6 @@ class _BoardState extends State<Board> {
     });
   }
 
-
   CellType toCellType(int num, int snakeHead) {
     if (num == 1) {
       return CellType.tail;
@@ -94,5 +92,18 @@ class _BoardState extends State<Board> {
     }
 
     return CellType.empty;
+  }
+
+  String getHead(GameState state) {
+    switch (state.direction) {
+      case Direction.right:
+        return 'assets/head_right.png';
+      case Direction.left:
+        return 'assets/head_left.png';
+      case Direction.up:
+        return 'assets/head_up.png';
+      case Direction.down:
+        return 'assets/head_down.png';
+    }
   }
 }
