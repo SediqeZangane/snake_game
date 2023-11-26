@@ -79,7 +79,7 @@ class _BoardState extends State<Board> {
       case CellType.body:
         imagePath = getBody(rowIndex, columnIndex, state);
       case CellType.tail:
-        imagePath = 'assets/tail_up.png';
+        imagePath = getTail(rowIndex, columnIndex, state);
       case CellType.seed:
         imagePath = 'assets/apple.png';
       case CellType.empty:
@@ -129,15 +129,17 @@ class _BoardState extends State<Board> {
 
     final rightBody = state.board[rowIndex]
         [(columnIndex == boardSize - 1 ? -1 : columnIndex) + 1];
+
+    final upBody =
+        state.board[(rowIndex == 0 ? boardSize : rowIndex) - 1][columnIndex];
+
+    final downBody = state
+        .board[(rowIndex == boardSize - 1 ? -1 : rowIndex) + 1][columnIndex];
+
     if (leftBody > 0 && rightBody > 0) {
       return 'assets/body_horizontal.png';
     }
 
-    final upBody = state.board[(rowIndex == 0 ? boardSize : rowIndex) - 1]
-        [columnIndex];
-
-    final downBody =
-        state.board[(rowIndex == boardSize - 1 ? -1 : rowIndex) + 1][columnIndex];
     if (upBody > 0 && downBody > 0) {
       return 'assets/body_vertical.png';
     }
@@ -158,7 +160,40 @@ class _BoardState extends State<Board> {
       return 'assets/body_bottomLeft.png';
     }
 
-    int a = 0;
+    return 'assets/apple.png';
+  }
+
+  String getTail(
+    int rowIndex,
+    int columnIndex,
+    GameState state,
+  ) {
+    final leftBody =
+        state.board[rowIndex][(columnIndex == 0 ? boardSize : columnIndex) - 1];
+    if (leftBody > 0) {
+      return 'assets/tail_right.png';
+    }
+
+    final rightBody = state.board[rowIndex]
+        [(columnIndex == boardSize - 1 ? -1 : columnIndex) + 1];
+
+    if (rightBody > 0) {
+      return 'assets/tail_left.png';
+    }
+
+    final upBody =
+        state.board[(rowIndex == 0 ? boardSize : rowIndex) - 1][columnIndex];
+
+    if (upBody > 0) {
+      return 'assets/tail_down.png';
+    }
+
+    final downBody = state
+        .board[(rowIndex == boardSize - 1 ? -1 : rowIndex) + 1][columnIndex];
+
+    if (downBody > 0) {
+      return 'assets/tail_up.png';
+    }
     return 'assets/apple.png';
   }
 }
