@@ -31,7 +31,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
             headPosition: Position(row: rowHead, column: columnHead),
           ),
         );
-        timer ??= Timer.periodic(const Duration(milliseconds: 300), (timer) {
+        timer = Timer.periodic(const Duration(milliseconds: 300), (timer) {
           if (state.gameOver) {
             return;
           }
@@ -103,6 +103,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         final nextCell = board[nextRow][nextColumn];
 
         if (nextCell > 0) {
+          timer?.cancel();
           emit(state.copyWith(gameOver: true));
           saveScore();
           return;

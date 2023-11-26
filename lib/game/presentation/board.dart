@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snake_game/game/application/game_bloc.dart';
@@ -20,12 +21,18 @@ class _BoardState extends State<Board> {
         child: Column(
             mainAxisSize: MainAxisSize.min,
             children: state.board
-                .map(
-                  (row) => Row(
+                .mapIndexed(
+                  (rowIndex, row) => Row(
                     mainAxisSize: MainAxisSize.min,
                     children: row
-                        .map((cell) =>
-                            buildImageCell(cell, state.snakeHead, state))
+                        .mapIndexed(
+                          (columnIndex, cell) => buildImageCell(
+                            rowIndex,
+                            columnIndex,
+                            cell,
+                            state,
+                          ),
+                        )
                         .toList(),
                   ),
                 )
@@ -59,13 +66,18 @@ class _BoardState extends State<Board> {
     });
   }
 
-  Widget buildImageCell(int cell, int snakeHead, GameState state) {
+  Widget buildImageCell(
+    int rowIndex,
+    int columnIndex,
+    int cell,
+    GameState state,
+  ) {
     String? imagePath;
-    switch (toCellType(cell, snakeHead)) {
+    switch (toCellType(cell, state.snakeHead)) {
       case CellType.head:
         imagePath = getHead(state);
       case CellType.body:
-        imagePath = 'assets/body_vertical.png';
+        imagePath = getBody(rowIndex, columnIndex, state);
       case CellType.tail:
         imagePath = 'assets/tail_up.png';
       case CellType.seed:
@@ -105,5 +117,48 @@ class _BoardState extends State<Board> {
       case Direction.down:
         return 'assets/head_down.png';
     }
+  }
+
+  String getBody(
+    int rowIndex,
+    int columnIndex,
+    GameState state,
+  ) {
+    final leftBody =
+        state.board[rowIndex][(columnIndex == 0 ? boardSize : columnIndex) - 1];
+
+    final rightBody = state.board[rowIndex]
+        [(columnIndex == boardSize - 1 ? -1 : columnIndex) + 1];
+    if (leftBody > 0 && rightBody > 0) {
+      return 'assets/body_horizontal.png';
+    }
+
+    final upBody = state.board[(rowIndex == 0 ? boardSize : rowIndex) - 1]
+        [columnIndex];
+
+    final downBody =
+        state.board[(rowIndex == boardSize - 1 ? -1 : rowIndex) + 1][columnIndex];
+    if (upBody > 0 && downBody > 0) {
+      return 'assets/body_vertical.png';
+    }
+
+    if (leftBody > 0 && upBody > 0) {
+      return 'assets/body_topLeft.png';
+    }
+
+    if (rightBody > 0 && upBody > 0) {
+      return 'assets/body_topRight.png';
+    }
+
+    if (rightBody > 0 && downBody > 0) {
+      return 'assets/body_bottomRight.png';
+    }
+
+    if (leftBody > 0 && downBody > 0) {
+      return 'assets/body_bottomLeft.png';
+    }
+
+    int a = 0;
+    return 'assets/apple.png';
   }
 }
